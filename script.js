@@ -3,29 +3,26 @@ const weatherButton = document.getElementById('search-button');
 const weatherContainer = document.getElementById('weather');
 
 async function getWeather(city) {
-		return await fetch(`https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${city}?unitGroup=metric&key=2Y9T3ZLZ6JDM3BTH344FCVUBW&contentType=json`, {
-			"method": "GET",
+	return await fetch(`https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${city}?unitGroup=metric&key=2Y9T3ZLZ6JDM3BTH344FCVUBW&contentType=json`, {
+		"method": "GET",
+	})
+		.then(response => {
+			if (!response.ok) {
+				throw new Error("Network response was not ok " + response.statusText);
+			}
+			return response.json();
 		})
-	.then(response => {
-		if (!response.ok) {
-			throw new Error("Network response was not ok " + response.statusText);
-		}
-		return response.json();
-	})
-	.then(data => {
-		console.log(data);
-		return {
-			city, 
-			data
-		};
-	})
-	.catch(err => {
-		console.error(err);
-	});
+		.then(data => {
+			console.log(data);
+			return data;
+		})
+		.catch(err => {
+			console.error(err);
+		});
 
 }
 
-function prepareWeather(searchedCity, data) {
+function prepareWeather(data) {
 	const city = data.resolvedAddress;
 	const temperature = data.currentConditions.temp;
 	const temperatureLike = data.currentConditions.feelslike;
@@ -84,13 +81,9 @@ function fillWeather(data) {
 	windSpeedElement.setAttribute('id', 'wind-speed');
 	windSpeedElement.textContent = data.windSpeed + " km/h";
 
-	const likelihoodOfRainElement = document.createElement('p');
-	likelihoodOfRainElement.setAttribute('id', 'likelihood-of-rain');
-	likelihoodOfRainElement.textContent = data.likelihoodOfRain + "%";
-
-	const likelihoodOfSnowElement = document.createElement('p');
-	likelihoodOfSnowElement.setAttribute('id', 'likelihood-of-snow');
-	likelihoodOfSnowElement.textContent = data.likelihoodOfSnow + "%";
+	const likelihoodElement = document.createElement('p');
+	likelihoodElement.setAttribute('id', 'likelihood');
+	likelihoodElement.textContent = `Rain ${data.likelihoodOfRain == null ? 0 : data.likelihoodOfRain}%, Snow ${data.likelihoodOfSnow == null ? 0 : data.likelihoodOfSnow}%`;
 
 	const temperatureDescriptionElement = document.createElement('p');
 	temperatureDescriptionElement.setAttribute('id', 'temperature-description');
@@ -128,8 +121,7 @@ function fillWeather(data) {
 	weatherContainer.appendChild(temperatureElement);
 	weatherContainer.appendChild(temperatureLikeElement);
 	weatherContainer.appendChild(windSpeedElement);
-	weatherContainer.appendChild(likelihoodOfRainElement);
-	weatherContainer.appendChild(likelihoodOfSnowElement);
+	weatherContainer.appendChild(likelihoodElement);
 	weatherContainer.appendChild(temperatureDescriptionElement);
 	weatherContainer.appendChild(temperatureByHoursNowDayElement);
 	weatherContainer.appendChild(temperatureByHoursNextDayElement);
