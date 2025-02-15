@@ -3,7 +3,7 @@ const weatherButton = document.getElementById('search-button');
 const weatherContainer = document.getElementById('weather');
 
 async function getWeather(city) {
-	return await fetch(`https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${city}?unitGroup=metric&key=2Y9T3ZLZ6JDM3BTH344FCVUBW&contentType=json`, {
+	return await fetch(`https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${city}?unitGroup=metric&key=${window.env.API_KEY}&contentType=json`, {
 		"method": "GET",
 	})
 		.then(response => {

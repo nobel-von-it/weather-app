@@ -1,0 +1,5 @@
+const env = {
+	API_KEY: "YOUR_API_KEY",
+};
+
+window.env = env;
